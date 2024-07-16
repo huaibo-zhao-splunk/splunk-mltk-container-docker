@@ -179,7 +179,7 @@ async def set_fit(request : Request):
     
     # 6. fit model 
     try:
-        app.Model["fit_info"] = app.Model["algo"].fit(app.Model["model"], app.Model["df"], app.Model["meta"])
+        app.Model["fit_info"] = await app.Model["algo"].fit(app.Model["model"], app.Model["df"], app.Model["meta"])
         print("/fit: " + str(app.Model["fit_info"]) + "")
     except Exception as e:
         response["message"] += 'unable to fit model. Ended with exception: ' + str(e)
@@ -278,7 +278,7 @@ async def set_apply(request : Request):
     if "algo" in app.Model:
         # TODO check if same algo and model name otherwise hard load by default
         try:
-            df_result = pd.DataFrame(app.Model["algo"].apply(app.Model["model"], app.Model["df"], app.Model["meta"]))
+            df_result = await pd.DataFrame(app.Model["algo"].apply(app.Model["model"], app.Model["df"], app.Model["meta"]))
             print("/apply: returned result dataframe with shape " + str(df_result.shape) + "")
         except Exception as e:
             response["message"] += 'unable to apply model. Ended with exception: ' + str(e)
@@ -339,7 +339,7 @@ async def set_compute(request : Request):
         print("/compute: conversion error: " + str(e))
         return response
     
-    df_result = app.Model["algo"].compute(None, app.Model["df"], app.Model["meta"])
+    df_result = await app.Model["algo"].compute(None, app.Model["df"], app.Model["meta"])
     print("Finished computation")
     response["results"] = json.dumps(df_result)
     
